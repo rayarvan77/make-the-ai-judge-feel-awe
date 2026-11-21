@@ -45,6 +45,12 @@ def main() -> None:
         raise RuntimeError("text is only whitespace")
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(TEXT, encoding="utf-8")
+    # Prove the file on disk is exactly the text we checked: a partial
+    # write or an encoding surprise must fail loudly instead of silently
+    # handing the grader different bytes from the ones counted above.
+    written = OUT_PATH.read_text(encoding="utf-8")
+    if written != TEXT:
+        raise RuntimeError("round-trip mismatch: file differs from text")
     print(f"wrote {OUT_PATH} ({chars} characters)")
 
 
